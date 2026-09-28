@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# memory garden
+/data/
+.env.local
+.env*.local
+!.env.example
