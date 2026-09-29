@@ -143,6 +143,8 @@ export const memories = pgTable(
     linkedPersonId: text("linked_person_id"),
     sync: jsonb("sync").$type<SyncInfo>().notNull().default({ metadataSynced: false }),
     createdBy: text("created_by").references(() => users.id, { onDelete: "set null" }),
+    /** Where an imported memory came from (e.g. "legacy:photo:<id>"), so re-imports never duplicate. */
+    sourceRef: text("source_ref").unique(),
     createdAt: ts("created_at").notNull().defaultNow(),
     updatedAt: ts("updated_at").notNull().defaultNow(),
   },
@@ -165,6 +167,7 @@ export const people = pgTable(
     /** Caregiver's own wording, shown when present (e.g. "Chinni's husband"). */
     relationshipLabel: text("relationship_label"),
     notes: text("notes"),
+    sourceRef: text("source_ref").unique(),
     createdAt: ts("created_at").notNull().defaultNow(),
   },
   (t) => [index("people_patient_idx").on(t.patientId)],
@@ -214,6 +217,7 @@ export const collections = pgTable(
     title: text("title").notNull(),
     description: text("description"),
     category: text("category"),
+    sourceRef: text("source_ref").unique(),
     createdAt: ts("created_at").notNull().defaultNow(),
     updatedAt: ts("updated_at").notNull().defaultNow(),
   },

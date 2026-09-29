@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // Node-only packages: embedded PostgreSQL (WASM + data files), the Cloudinary SDK and node-postgres
   // are loaded with native `require` instead of being bundled.
-  serverExternalPackages: ["@electric-sql/pglite", "cloudinary", "pg"],
+  serverExternalPackages: ["@electric-sql/pglite", "cloudinary", "pg", "mongodb", "bcryptjs"],
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },

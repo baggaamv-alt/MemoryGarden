@@ -24,7 +24,7 @@ npm run dev                      # http://localhost:3000
    until the caregiver's password is entered again (tap **Caregiver** at the bottom of the home screen).
 
 Other scripts: `npm test` (27 unit + integration tests), `npm run typecheck`, `npm run lint`,
-`npm run build`, `npm run verify:cloudinary` (live check of your Cloudinary account, see below).
+`npm run build`, `npm run verify:cloudinary` (live check of your Cloudinary account).
 
 ## Configuration (`.env.local`)
 
@@ -38,6 +38,23 @@ Other scripts: `npm test` (27 unit + integration tests), `npm run typecheck`, `n
 
 Without Cloudinary credentials the app runs, but only the illustrated everyday cards (Daily Life
 Match) are playable; the dashboard shows a setup notice.
+
+## Importing from the previous backend (memory-app-backend)
+
+The earlier Express + MongoDB backend is merged in as a one-time import rather than a second
+server. Set `LEGACY_MONGODB_URI` (and `LEGACY_MONGODB_DNS_SERVERS` if SRV lookups fail) and a
+**Bring memories from the previous Memory Garden** card appears on the caregiver home page.
+
+- The caregiver proves ownership with the old account's email and password (checked against its
+  bcrypt hash; never stored). The account becomes a patient linked to that caregiver.
+- Each photo of each old memory becomes one memory, re-uploaded as a private, face-detected asset
+  with tags and structured metadata; the original Cloudinary files are left untouched. Titles,
+  years, events, descriptions (as captions), tags, people (relationships mapped, e.g. "Mom" →
+  mother), albums and who-appears-in-which-memory come across.
+- Everything arrives as **Needs review** — nothing reaches activities until the caregiver approves it.
+- Re-running only adds what's new (`source_ref` keeps imports idempotent).
+- Not imported on purpose: scores, stars, Easy/Medium/Hard, timers and the fox/owl characters —
+  those mechanics conflict with this app's no-pressure, consent-based design.
 
 ## How Cloudinary is used (the media intelligence pipeline)
 
@@ -93,14 +110,15 @@ JSON data export and full deletion (optionally including Cloudinary media).
 
 ## Status and honest notes
 
-- **Verified here:** type-check, lint, production build, 27 automated tests (game logic, all 10
+- **Verified here:** type-check, lint, production build, 30 automated tests (game logic, all 10
   generators producing signed transformations, and an end-to-end engine test on embedded
   PostgreSQL), and a browser walk-through of sign-in → patient profile → patient mode → character
   creation → map → Daily Life Match → rewards → shop purchase → garden, in English and Telugu.
-- **Not yet verified live:** uploads, structured metadata, Search API and photo activities against a
-  real Cloudinary account — no credentials were available. Add them and run
-  `npm run verify:cloudinary`; it uploads one test image, searches for it, fetches each game
-  transformation, confirms unsigned URLs are refused, then deletes that test image.
+- **Verified live on Cloudinary:** `npm run verify:cloudinary` passes (dynamic folders, structured
+  metadata, authenticated upload with face detection, Search API, all game transformations,
+  unsigned URLs refused), and uploads → approval → Search-backed activities work through the app.
+- **Import from the previous backend:** covered by automated tests against fixture data; the live
+  run needs this computer's IP allowed in MongoDB Atlas → Network Access.
 - Telugu text was written carefully but should be reviewed by a native speaker; Telugu read-aloud
   needs a Telugu voice on the device.
 - The service worker (offline-friendly caching) is registered in production builds only.

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CloudinaryStatusCard } from "@/components/caregiver/CloudinaryStatusCard";
+import { LegacyImportCard } from "@/components/caregiver/LegacyImportCard";
 import { pageCaregiver } from "@/lib/auth/session";
 import { listPatients } from "@/lib/services/caregiver";
 
@@ -19,6 +20,7 @@ export default async function CaregiverHome() {
       </div>
 
       <CloudinaryStatusCard compact />
+      <LegacyImportCard />
 
       {patients.length === 0 ? (
         <div className="cg-card flex flex-col items-center gap-3 p-10 text-center">

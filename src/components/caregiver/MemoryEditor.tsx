@@ -1,5 +1,6 @@
 "use client";
 
+import { LocalTime } from "@/components/ui/LocalTime";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -577,8 +578,25 @@ export function MemoryEditor({ patientId, initial }: { patientId: string; initia
               <Info label="Folder" value={m.assetFolder ?? "—"} mono />
               <Info label="Delivery" value={`${m.resourceType} · ${m.deliveryType}${m.deliveryType === "authenticated" ? " (signed URLs only)" : ""}`} />
               <Info label="Size" value={[m.width && m.height ? `${m.width}×${m.height}` : null, m.format, m.bytes ? `${Math.round(m.bytes / 1024)} KB` : null, m.duration ? `${Math.round(m.duration)}s` : null].filter(Boolean).join(" · ")} />
-              <Info label="Structured metadata" value={m.sync.metadataSynced ? `Synced ${m.sync.syncedAt ? new Date(m.sync.syncedAt).toLocaleString() : ""}` : `Not synced${m.sync.error ? ` — ${m.sync.error}` : ""}`} bad={!m.sync.metadataSynced} />
-              <Info label="Search API" value={m.sync.searchIndexedAt ? `Found in search (${new Date(m.sync.searchIndexedAt).toLocaleString()})` : m.sync.searchCheckedAt ? "Not in the search index yet — usually takes a few seconds" : "Not checked yet"} />
+              <Info
+                label="Structured metadata"
+                value={m.sync.metadataSynced ? <>Synced {m.sync.syncedAt && <LocalTime iso={m.sync.syncedAt} />}</> : `Not synced${m.sync.error ? ` — ${m.sync.error}` : ""}`}
+                bad={!m.sync.metadataSynced}
+              />
+              <Info
+                label="Search API"
+                value={
+                  m.sync.searchIndexedAt ? (
+                    <>
+                      Found in search (<LocalTime iso={m.sync.searchIndexedAt} />)
+                    </>
+                  ) : m.sync.searchCheckedAt ? (
+                    "Not in the search index yet — usually takes a few seconds"
+                  ) : (
+                    "Not checked yet"
+                  )
+                }
+              />
             </dl>
             <button
               className="cg-btn mt-3"
@@ -611,7 +629,7 @@ export function MemoryEditor({ patientId, initial }: { patientId: string; initia
   );
 }
 
-function Info({ label, value, mono, bad }: { label: string; value: string; mono?: boolean; bad?: boolean }) {
+function Info({ label, value, mono, bad }: { label: string; value: React.ReactNode; mono?: boolean; bad?: boolean }) {
   return (
     <div className="grid grid-cols-[9rem_1fr] gap-2">
       <dt className="text-xs font-bold uppercase tracking-wide text-ink-faint">{label}</dt>

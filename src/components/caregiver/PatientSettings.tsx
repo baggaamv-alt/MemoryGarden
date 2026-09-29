@@ -1,5 +1,6 @@
 "use client";
 
+import { LocalTime } from "@/components/ui/LocalTime";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, errorText } from "@/lib/client/api";
@@ -188,7 +189,7 @@ export function PatientSettings({
           <ul className="flex max-h-72 flex-col gap-1 overflow-y-auto text-xs">
             {audit.map((a, i) => (
               <li key={i} className="flex gap-2">
-                <span className="w-36 shrink-0 text-ink-faint">{new Date(a.at).toLocaleString()}</span>
+                <span className="w-36 shrink-0 text-ink-faint"><LocalTime iso={a.at} /></span>
                 <span>
                   <b>{a.actor}</b> {a.action.replace(/\./g, " ")}
                 </span>

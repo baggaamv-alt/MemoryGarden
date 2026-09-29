@@ -1,5 +1,6 @@
 "use client";
 
+import { LocalTime } from "@/components/ui/LocalTime";
 import Link from "next/link";
 import { useState } from "react";
 import type { patientInsights } from "@/lib/services/insights";
@@ -131,7 +132,7 @@ export function InsightsView({ data, patientId, name }: { data: Data; patientId:
             <ul className="flex flex-col gap-1 text-sm">
               {data.challengeLog.map((c) => (
                 <li key={c.id}>
-                  <span className="text-ink-soft">{new Date(c.at).toLocaleDateString()}</span> · {c.game}: {c.direction === "up" ? "a little more challenge" : "a gentler setting"} ({c.from}→
+                  <span className="text-ink-soft"><LocalTime iso={c.at} date /></span> · {c.game}: {c.direction === "up" ? "a little more challenge" : "a gentler setting"} ({c.from}→
                   {c.to}) — <b>{c.status === "accepted" ? "yes, let's try" : c.status === "keep_familiar" ? "keep it familiar" : c.status === "later" ? "maybe later" : "not answered yet"}</b>
                 </li>
               ))}
@@ -164,7 +165,7 @@ export function InsightsView({ data, patientId, name }: { data: Data; patientId:
               <tbody className="divide-y divide-[#efe8dc]">
                 {data.history.map((h) => (
                   <tr key={h.id}>
-                    <td className="py-2 pr-3 whitespace-nowrap text-ink-soft">{new Date(h.at).toLocaleString()}</td>
+                    <td className="py-2 pr-3 whitespace-nowrap text-ink-soft"><LocalTime iso={h.at} /></td>
                     <td className="py-2 pr-3">
                       <b>{h.gameName}</b> · {h.title}
                     </td>
@@ -302,7 +303,7 @@ function Spark({ series, label }: { series: { at: string; rate: number | null; h
       <polyline points={pts.map((p, i) => `${x(i)},${yv(p.rate)}`).join(" ")} fill="none" stroke="#4f8a4b" strokeWidth="2" strokeLinejoin="round" />
       {pts.map((p, i) => (
         <circle key={p.at} cx={x(i)} cy={yv(p.rate)} r="4" fill="#4f8a4b" stroke="#fff" strokeWidth="2">
-          <title>{`${new Date(p.at).toLocaleDateString()}: ${Math.round(p.rate * 100)}% first try, ${p.hints} hints`}</title>
+          <title>{`${p.at.slice(0, 10)}: ${Math.round(p.rate * 100)}% first try, ${p.hints} hints`}</title>
         </circle>
       ))}
     </svg>

@@ -209,6 +209,8 @@ export type NewMemoryFields = {
   linkedMemoryId?: string | null;
   linkedPersonId?: string | null;
   collectionId?: string | null;
+  /** Origin of an imported memory, e.g. "legacy:photo:<id>". */
+  sourceRef?: string | null;
 };
 
 export async function uploadMemory(
@@ -274,6 +276,7 @@ export async function uploadMemory(
     linkedPersonId: fields.linkedPersonId ?? null,
     sync: { metadataSynced: false },
     createdBy: caregiverId,
+    sourceRef: fields.sourceRef ?? null,
   };
 
   const uploaded = await uploadMemoryAsset({
