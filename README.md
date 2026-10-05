@@ -123,3 +123,4 @@ JSON data export and full deletion (optionally including Cloudinary media).
   needs a Telugu voice on the device.
 - The service worker (offline-friendly caching) is registered in production builds only.
 - `data/` holds the local database; delete it (with the server stopped) to start fresh.
+Deployed application: https://memorygarden-chi.vercel.app/
